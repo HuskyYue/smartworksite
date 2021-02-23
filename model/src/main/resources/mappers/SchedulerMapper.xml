@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.slzhkj.smartworksite.model.mapper.SchedulerMapper" >
+    <resultMap id="BaseResultMap" type="com.slzhkj.smartworksite.model.dto.SchedulerDto">
+    </resultMap>
+    <sql id="Base_Column_List" >
+       cron_class, cron_method
+    </sql>
+    <select id="selectAll" resultType="com.slzhkj.smartworksite.model.dto.SchedulerDto" >
+        select
+        <include refid="Base_Column_List" />
+        from sws_scheduler
+    </select>
+</mapper>

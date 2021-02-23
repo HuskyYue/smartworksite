@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.slzhkj.smartworksite.model.mapper.DataAcceptMapper" >
+    <sql id="Base_Column_List" >
+    app_id, secret,salt, token, create_time, update_time
+    </sql>
+    <insert id="put" parameterType="com.slzhkj.smartworksite.model.dto.DataAcceptDto">
+        insert into sws_request_log (app_id, secret)
+        values (#{paramOne},#{paramTwo})
+    </insert>
+
+</mapper>

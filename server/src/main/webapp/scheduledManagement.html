@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" href="css/amazeui.min.css" />
+	<link rel="stylesheet" href="css/admin.css" />
+</head>
+
+<body onload="getData(1)">
+<div class="admin-content-body">
+	<div class="am-cf am-padding am-padding-bottom-0">
+		<div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">定时任务管理</strong><small></small></div>
+	</div>
+
+	<hr>
+
+	<div class="am-g">
+		<div class="am-u-sm-12 am-u-md-6">
+			<div class="am-btn-toolbar">
+				<div class="am-btn-group am-btn-group-xs">
+					<button onclick="addScheduled('新增定时任务')" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
+				</div>
+			</div>
+		</div>
+		<div class="am-u-sm-12 am-u-md-3">
+
+		</div>
+		<div class="am-u-sm-12 am-u-md-3">
+			<div class="am-input-group am-input-group-sm">
+				<input type="text" class="am-form-field">
+				<span class="am-input-group-btn">
+            <button class="am-btn am-btn-default" type="button">搜索</button>
+          </span>
+			</div>
+		</div>
+	</div>
+	<div class="am-g">
+		<div class="am-u-sm-12">
+			<form class="am-form">
+				<table class="am-table am-table-striped am-table-hover table-main">
+					<thead>
+					<tr>
+						<th class="table-check"><input type="checkbox"></th>
+						<th class="table-id">ID</th>
+						<th class="table-title">定时器名称</th>
+						<th class="table-type">调用类</th>
+						<th class="table-set">调用方法</th>
+						<th class="table-set">调用参数</th>
+						<th class="table-set">频率</th>
+						<th class="table-set am-hide-sm-only">状态</th>
+						<th class="table-set">备注</th>
+						<th class="table-set">创建时间</th>
+						<th class="table-set">更新时间</th>
+						<th class="table-set">操作</th>
+					</tr>
+					</thead>
+					<tbody id="ulul">
+
+
+					</tbody>
+				</table>
+				<div class="am-cf">
+					共 15 条记录
+					<div class="am-fr">
+						<ul class="am-pagination">
+							<li class="am-disabled">
+								<a href="#">«</a>
+							</li>
+							<li class="am-active">
+								<a href="#" onclick="getData(1)">1</a>
+							</li>
+							<li>
+								<a href="#" onclick="getData(2)">2</a>
+							</li>
+							<li>
+								<a href="#" onclick="getData(3)">3</a>
+							</li>
+							<li>
+								<a href="#" onclick="getData(4)">4</a>
+							</li>
+							<li>
+								<a href="#" onclick="getData(5)">5</a>
+							</li>
+							<li>
+								<a href="#">»</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<hr>
+			</form>
+		</div>
+	</div>
+</div>
+</body>
+<!--   Core JS Files   -->
+<script src="js/jquery-3.1.0.min.js" type="text/javascript"></script>
+<script src="js/bootstrap.min.js" type="text/javascript"></script>
+<script src="js/material.min.js" type="text/javascript"></script>
+
+<!--  Charts Plugin -->
+<script src="js/chartist.min.js"></script>
+
+
+
+<script src="js/material-dashboard.js"></script>
+
+<!-- Material Dashboard DEMO methods, don't include it in your project! -->
+
+<script type="text/javascript" src="myplugs/js/plugs.js">
+</script>
+<script type="text/javascript">
+	//添加定时器弹出层
+	function addScheduled(title) {
+		$.jq_Panel({
+			title: title,
+			iframeWidth: 500,
+			iframeHeight: 450,
+			url: "scheduledAdd.html"
+		});
+	}
+	//修改定时器弹出层
+	function updateScheduled(id) {
+		$.jq_Panel({
+			title: '修改定时器任务',
+			iframeWidth: 500,
+			iframeHeight: 450,
+			url: "scheduledUpdate.html"
+		});
+	}
+	//删除定时器弹出层
+	function deleteScheduled(cronId) {
+		$.ajax({
+			type: "POST",//方法类型
+			dataType: "json",//预期服务器返回的数据类型
+			url: "scheduled/delete?id=" + cronId ,//url
+			contentType: "application/json;",//这个必须设置（后台用@RequestBody）接参数
+			data: null,
+			success: function (result) {
+				alert(result.msg);
+				if (result.resultCode == 200) {
+					location.href = "/scheduledManagement.html";
+				}
+			},
+			error : function() {
+				alert("数据异常！");
+			}
+		});
+
+	}
+
+	function startOrStop(cronId,status) {
+		var i = 1;
+
+		var cronStatus;
+		if ( status  == '1' ) {
+			cronStatus = 0;
+		} else {
+			cronStatus = 1;
+		}
+		$.ajax({
+			type: "POST",//方法类型
+			dataType: "json",//预期服务器返回的数据类型
+			url: "scheduled/startOrStopScheduled?id="+cronId+"&status="+ cronStatus ,//url
+			contentType: "application/json;",//这个必须设置（后台用@RequestBody）接参数
+			data: null,
+			success: function (result) {
+				alert(result.msg);
+				if (result.resultCode == 200) {
+					location.href = "/scheduledManagement.html";
+				}
+			},
+			error : function() {
+				alert("数据异常！");
+			}
+		});
+
+	}
+</script>
+<script type="text/javascript">
+	function getData(currentPage){
+		$.ajax({
+			type : "get",
+			url : "scheduled/selectAll?currentPage="+currentPage+"&pageSize=8" ,
+			// data : {id:1},
+			// dataType : "json",
+			// contentType: "application/json",
+			success : function(res){
+				//console.log(data);//后台json数据对象
+				// alert(res.code);
+				// alert(res.msg);
+				// alert(JSON.stringify(res.data));
+				//console.log(JSON.stringify(data)); //后台json数据转换为jsonStr
+				var html = "";
+
+				for (var i = 0; i < res.data.length; i++) {    //遍历data数组
+
+					var ls = res.data[i];
+
+					var status = "";
+					if (ls.cronStatus == 0) {
+						status = "已停止";
+					} else {
+						status = "启用中";
+					}
+					var cronId = ls.id;
+
+					html += "<tr>\n" +
+							"<td><input type=\"checkbox\"></td>\n" +
+							"<td>"+ ls.id +"</td>\n" +
+							"<td>\n" +
+							"<a href=\"http://localhost:9103/smartworksite/dataAdapter.html\">" + ls.cronName + "</a>\n" +
+							"</td>\n" +
+							"<td>"+ ls.cronClass +"</td>\n" +
+							"<td>"+ ls.cronMethod +"</td>\n" +
+							"<td>" + ls.cronClassParams + "</td>\n" +
+							"<td>"+ ls.cron +"</td>\n" +
+							"<td><button onclick='startOrStop(&quot;"+ls.id+"&quot;,&quot;"+ls.cronStatus+"&quot;)' class=\"am-btn am-btn-default am-btn-xs am-text-success \">"+ status +"</button></td>\n" +
+							"<td>" + ls.remark + "</td>\n" +
+							"<td>" + ls.createTime + "</td>\n" +
+							"<td>" + ls.updateTime + "</td>\n" +
+							"<td>\n" +
+							"<div class=\"am-btn-toolbar\">\n" +
+							"<div class=\"am-btn-group am-btn-group-xs\">\n" +
+							"<button onclick='updateScheduled(&quot;"+ls.id+"&quot;)' class=\"am-btn am-btn-default am-btn-xs am-text-secondary\"><span class=\"am-icon-pencil-square-o\"></span> 编辑</button>\n" +
+							"<button onclick='deleteScheduled(&quot;"+ls.id+"&quot;)' class=\"am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only\"><span class=\"am-icon-trash-o\"></span> 删除</button>\n" +
+							"</div>\n" +
+							"</div>\n" +
+							"</td>\n" +
+							"</tr>"
+
+				}
+
+				$("#ulul").html(html); //在html页面id=ulul的标签里显示html内容
+
+			},
+			error: function (XMLHttpRequest, textStatus, errorThrown) {
+				alert(XMLHttpRequest.status);
+				alert(XMLHttpRequest.readyState);
+				alert(textStatus + "ajax出错了");
+			}
+
+		});
+
+	}
+</script>
+</html>

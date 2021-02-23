@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.slzhkj.smartworksite.model.mapper.CronMapper" >
+    <resultMap id="BaseResultMap" type="com.slzhkj.smartworksite.model.entity.Cron">
+    </resultMap>
+    <sql id="Base_Column_List" >
+       id, cron_id,cron_name,mapper_url,cron_class,cron_method,post_url,get_url,cron,cron_class_params,cron_status,remark, classify,create_time,update_time
+    </sql>
+    <sql id="Valid_Column_List">
+         id, cron_id,cron_name,mapper_url,cron_class,cron_method,cron_status
+    </sql>
+    <insert id="insert" parameterType="com.slzhkj.smartworksite.model.entity.Cron">
+        insert into sws_cron ( cron_id,
+        cron_class,cron,cron_class_params,cron_status,
+        remark,create_time,update_time,
+        cron_name,cron_method,
+        post_url,get_url,
+        classify,
+        mapper_url,
+        is_del)
+        values (#{cronId,jdbcType=VARCHAR},
+        #{cronClass,jdbcType=VARCHAR},#{cron,jdbcType=VARCHAR},#{cronClassParams,jdbcType=VARCHAR}, #{cronStatus,jdbcType=BIGINT},
+        #{remark,jdbcType=VARCHAR},NOW() , NOW(),
+        #{cronName,jdbcType=VARCHAR},#{cronMethod,jdbcType=VARCHAR},
+        #{postUrl,jdbcType=VARCHAR},#{getUrl,jdbcType=VARCHAR},
+        #{classify,jdbcType=BIGINT},
+        #{mapperUrl,jdbcType=VARCHAR},
+        1 )
+    </insert>
+    <select id="selectByPrimaryKey" resultType="com.slzhkj.smartworksite.model.entity.Cron" parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        from sws_cron
+        where cron_id = #{cronId}
+        and is_del = 1
+    </select>
+
+    <update id="delete" parameterType="Integer" >
+    update sws_cron set is_del = 0
+    where id = #{id} and is_del = 1
+  </update>
+
+    <select id="selectParamsByCronId" resultType="String" parameterType="java.lang.String" >
+        select
+        cron_class_params
+        from sws_cron
+        where cron_id like #{cronId}
+        and is_del = 1
+    </select>
+
+    <select id="selectParamsByCronClassAndMethod" resultType="String" parameterType="java.lang.String" >
+        select
+        cron_class_params
+        from sws_cron
+        where cron_class like #{cronClass}
+        and cron_method like #{cronMethod}
+        and is_del = 1
+    </select>
+
+    <select id="selectAll" resultType="com.slzhkj.smartworksite.model.entity.Cron" >
+        select
+        <include refid="Base_Column_List" />
+        from sws_cron where is_del = 1
+    </select>
+
+    <select id="selectAllIncludeUnable" resultType="com.slzhkj.smartworksite.model.entity.Cron" >
+        select
+        <include refid="Valid_Column_List" />
+        from sws_cron
+    </select>
+    <update id="updateStatus" parameterType="Integer">
+        update sws_cron
+        set cron_status = #{cronStatus}
+        where id = #{id} and is_del = 1
+    </update>
+
+    <update id="update" parameterType="com.slzhkj.smartworksite.model.entity.Cron" >
+        update sws_cron
+        <set >
+            <if test="cronName != null and cronName != ''" >
+                cron_name = #{cronName,jdbcType=VARCHAR},
+            </if>
+            <if test="cronClass!= null and cronClass != ''" >
+                cron_class = #{cronClass,jdbcType=VARCHAR},
+            </if>
+            <if test="cronMethod != null and cronMethod != ''" >
+                cron_method = #{cronMethod,jdbcType=VARCHAR},
+            </if>
+            <if test="cron != null and cron != ''" >
+                cron = #{cron,jdbcType=VARCHAR},
+            </if>
+            <if test="cronClassParams != null and cronClassParams != ''" >
+                cron_class_params = #{cronClassParams,jdbcType=VARCHAR},
+            </if>
+            <if test="cronStatus != null and cronStatus != ''" >
+                cron_status = #{cronStatus,jdbcType=BIGINT},
+            </if>
+            <if test="remark != null and remark != ''" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="postUrl != null and postUrl != ''">
+                post_url = #{postUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="getUrl != null and getUrl != ''">
+                get_url = #{getUrl,jdbcType=VARCHAR},
+            </if>
+            update_time = now()
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+        and is_del = 1
+    </update>
+
+    <select id="selectAllCronClassAndCronMethod" resultType="com.slzhkj.smartworksite.model.entity.Cron">
+        select t.cron_class, t.cron_method from sws_cron t where is_del = 1
+    </select>
+
+    <select id="selectAllBySearchForm" parameterType="com.slzhkj.smartworksite.model.dto.SearchFormDto"
+            resultType="com.slzhkj.smartworksite.model.entity.Cron">
+        select
+        <include refid="Base_Column_List" />
+        from
+        sws_cron
+        where
+        is_del = 1
+        <if test="cronName != null and cronName != ''" >
+            and cron_name = #{cronName,jdbcType=VARCHAR}
+        </if>
+        <if test="postUrl != null and postUrl != ''">
+            and post_url = #{postUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="getUrl != null and getUrl != ''">
+            and get_url = #{getUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="cronStatus == 0 " >
+            and cron_status = 0
+        </if>
+        <if test="cronStatus == 1 " >
+            and cron_status = 1
+        </if>
+        <if test="classify != null " >
+            and classify = #{classify,jdbcType=BIGINT}
+        </if>
+        <if  test="classify == 0">
+            and classify = 0
+        </if>
+    </select>
+</mapper>

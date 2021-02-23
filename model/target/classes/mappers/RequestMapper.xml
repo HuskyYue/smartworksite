@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.slzhkj.smartworksite.model.mapper.RequestMapper" >
+    <resultMap id="BaseResultMap" type="com.slzhkj.smartworksite.model.dto.RequestDto" >
+        <result column="app_id" property="appId" jdbcType="VARCHAR" />
+        <result column="secret" property="secret" jdbcType="VARCHAR" />
+        <result column="salt" property="salt" jdbcType="VARCHAR" />
+        <result column="token" property="token" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+    app_id, secret,salt, token, create_time, update_time
+    </sql>
+    <sql id="Base_Column_List_Two">
+    app_id, secret, token , update_time
+    </sql>
+
+    <insert id="addRequestLog" parameterType="com.slzhkj.smartworksite.model.dto.RequestDto" >
+    insert into sws_request_log (app_id, secret, salt, token, create_time, update_time, is_del)
+    values
+        (#{appId,jdbcType=VARCHAR}, #{secret,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR},
+        #{token,jdbcType=VARCHAR}, NOW() , NOW(),
+        1 )
+    </insert>
+
+    <update id="updateRequestLog" parameterType="com.slzhkj.smartworksite.model.dto.RequestDto" >
+    update sws_request_log set
+    <if test="secret != null" >
+        secret = #{secret,jdbcType=VARCHAR},
+    </if>
+      salt = #{salt,jdbcType=VARCHAR},
+      token = #{token,jdbcType=VARCHAR},
+      update_time = now()
+    where app_id = #{appId,jdbcType=VARCHAR}
+    and is_del = 1;
+
+  </update>
+
+    <select id="getByAppIdAndSecret" resultType="Integer" parameterType="String" >
+        select
+        count(1) count
+        from sws_request_log
+        where app_id = #{appId}
+        and secret = #{secret}
+        and is_del = 1;
+    </select>
+
+    <select id="selectTokenRecord" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List_Two"/>
+        from sws_request_log
+        where
+        is_del = 1;
+    </select>
+
+    <select id="getByAppId" resultType="Integer">
+        select
+        count(1) count
+        from sws_request_log
+        where app_id = #{appId}
+        and
+        is_del = 1;
+    </select>
+
+    <select id="getByAppIdAndSecretForEnable" resultType="Integer" parameterType="String" >
+        select
+        count(1) count
+        from sws_external_user
+        where app_id = #{appId}
+        and secret = #{secret}
+        and
+        is_del = 1;
+    </select>
+
+    <select id="getAppIdAndUpdateTime" resultType="com.slzhkj.smartworksite.model.dto.RequestIDDto">
+        select id, app_id, update_time, token from sws_request_log where is_del = 1
+    </select>
+
+    <update id="deleteTokenRecord" parameterType="Integer">
+    update sws_request_log set is_del = 0 where id = #{id} and is_del = 1
+
+    </update>
+
+
+
+</mapper>

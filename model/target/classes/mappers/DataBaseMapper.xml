@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.slzhkj.smartworksite.model.mapper.DataBaseMapper" >
+    <select id="selectByTableName" parameterType="String" resultType="Integer">
+        select count(1) count from sws_insert_model t where t.table_name = #{table} and is_del = 1
+    </select>
+
+    <select id="getDataList" parameterType="com.slzhkj.smartworksite.model.dto.FormatJsonDto"  resultType="com.slzhkj.smartworksite.model.dto.FormatJsonDto">
+        select di.data_name dataName from v_data_info di
+    </select>
+
+    <select id="getUrlList" parameterType="com.slzhkj.smartworksite.model.dto.FormatJsonDto"  resultType="com.slzhkj.smartworksite.model.dto.FormatJsonDto">
+        select db.database_name dataName from sws_database db where db.is_del = 0 and database_type = 2
+    </select>
+
+    <select id="getTableList" parameterType="com.slzhkj.smartworksite.model.dto.FormatJsonDto" resultType="com.slzhkj.smartworksite.model.dto.FormatJsonDto">
+       select ti.table_name tableName, ti.data_name dataName from v_table_info ti where ti.data_name=#{dataName}
+    </select>
+
+    <select id="getColumnList" parameterType="com.slzhkj.smartworksite.model.dto.FormatJsonDto" resultType="com.slzhkj.smartworksite.model.dto.FormatJsonDto">
+       select
+       ci.column_name columnName,
+       ci.column_type columnType,
+       ci.table_name tableName,
+       ci.data_name dataName,
+       ci.column_comment columnComment
+       from
+       v_column_info ci
+       where
+       ci.data_name=#{dataName}
+       and ci.table_name =#{tableName}
+    </select>
+
+    <insert id="saveMapper" parameterType="com.slzhkj.smartworksite.model.dto.ProvideMappersDto">
+        insert into
+        sws_data_provide_mappers
+        (
+        id,
+        cron_id,
+        database_name,
+        table_name,
+        fields,
+        mappers,
+        alias
+        )
+        values
+        (
+        #{id},
+        #{postUrl},
+        #{database},
+        #{table},
+        #{fields},
+        #{mappers},
+        #{alias}
+        )
+    </insert>
+
+    <select id="listCronIdsInTableMappers" resultType="java.lang.String">
+        select cron_id from sws_data_provide_mappers
+    </select>
+
+</mapper>

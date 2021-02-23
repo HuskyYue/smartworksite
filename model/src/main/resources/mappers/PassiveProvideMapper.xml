@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.slzhkj.smartworksite.model.mapper.PassiveProvideMapper" >
+
+    <sql id="Base_Column_List" >
+       id, api_name, api_url, api_status, acquire_times_limit, remark, user_id, create_time, update_time
+    </sql>
+
+    <select id="selectAllBySearchForm" parameterType="com.slzhkj.smartworksite.model.dto.SearchFormDto"
+            resultType="com.slzhkj.smartworksite.model.entity.DataProvideLog">
+        select
+        <include refid="Base_Column_List" />
+        from
+        sws_data_provide_log
+        where
+        is_del = 1
+        <if test="apiName != null and apiName != ''" >
+            and api_name = #{apiName,jdbcType=VARCHAR}
+        </if>
+        <if test="apiUrl != null and apiUrl != ''">
+            and api_url = #{apiUrl,jdbcType=VARCHAR}
+        </if>
+        <if test="apiStatus != null and apiStatus != '' and apiStatus != 3" >
+            and api_status = #{apiStatus,jdbcType=BIGINT}
+        </if>
+    </select>
+
+    <select id="selectAll" resultType="com.slzhkj.smartworksite.model.entity.DataProvideLog">
+        select
+        <include refid="Base_Column_List" />
+        from
+        sws_data_provide_log
+        where
+        is_del = 1
+    </select>
+
+    <insert id="insert" parameterType="com.slzhkj.smartworksite.model.entity.DataProvideLog">
+        insert into sws_data_provide_log (
+        api_name, api_url, api_status,
+         acquire_times_limit,
+        remark, user_id,
+        create_time, update_time)
+        values (
+        #{apiName,jdbcType=VARCHAR},#{apiUrl,jdbcType=VARCHAR},#{apiStatus,jdbcType=BIGINT}, #{acquireTimesLimit,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, NOW() , NOW())
+    </insert>
+
+    <update id="update" parameterType="com.slzhkj.smartworksite.model.entity.DataProvideLog" >
+        update sws_data_provide_log
+        <set >
+            <if test="apiName != null and apiName != ''" >
+                api_name = #{apiName,jdbcType=VARCHAR},
+            </if>
+            <if test="apiUrl != null and apiUrl != ''" >
+                api_url = #{apiUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="apiStatus == 0 " >
+                api_Status = 0,
+            </if>
+            <if test="apiStatus == 1 " >
+                api_Status = 1,
+            </if>
+
+            <if test="acquireTimesLimit != null and acquireTimesLimit != ''" >
+                acquire_times_limit =  #{acquireTimesLimit,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null and remark != ''" >
+                remark =  #{remark,jdbcType=VARCHAR},
+            </if>
+                update_time = now()
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+        and is_del = 1
+    </update>
+
+    <update id="delete" parameterType="Integer">
+        update sws_data_provide_log
+        set is_del = 0
+        where id = #{id,jdbcType=BIGINT}
+        and is_del = 1
+    </update>
+
+</mapper>

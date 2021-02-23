@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	    <link rel="stylesheet" href="css/amazeui.min.css">
+		<link rel="stylesheet" href="css/admin.css">
+		<link rel="stylesheet" href="css/app.css">
+		<style>
+			.admin-main{
+				padding-top: 0px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="am-cf admin-main">
+		<!-- content start -->
+		<div class="admin-content">
+			<div class="admin-content-body">
+				<div class="am-g">
+					<form class="am-form am-form-horizontal"
+						  id="form" onsubmit="return false"
+						  method="post"
+						  style="padding-top:30px;" data-am-validator>
+						<div class="am-form-group">
+							<label for="scheduledAdd" class="am-u-sm-3 am-form-label">
+								定时器名称 </label>
+							<div class="am-u-sm-9">
+								<input type="text" id="scheduled-name" required placeholder="请输入定时器名称"
+									   name="cronName">
+							</div>
+						</div>
+						<div class="am-form-group">
+							<label for="scheduledAdd" class="am-u-sm-3 am-form-label">
+								调用类 </label>
+							<div class="am-u-sm-9">
+								<input type="text" id="scheduled-class" required placeholder="请输入调用类"
+									   name="cronClass">
+							</div>
+						</div>
+						<div class="am-form-group">
+							<label for="scheduledAdd" class="am-u-sm-3 am-form-label">
+								调用方法 </label>
+							<div class="am-u-sm-9">
+								<input type="text" id="scheduled-method" required placeholder="请输入调用方法"
+									   name="cronMethod">
+							</div>
+						</div>
+						<div class="am-form-group">
+							<label for="scheduledAdd" class="am-u-sm-3 am-form-label">
+								调用参数 </label>
+							<div class="am-u-sm-9">
+								<input type="text" id="scheduled-params" required placeholder="请输入调用参数"
+									   name="cronClassParams">
+							</div>
+						</div>
+						<div class="am-form-group">
+							<label for="scheduledAdd" class="am-u-sm-3 am-form-label">
+								调用频率 </label>
+							<div class="am-u-sm-9">
+								<input type="text" id="scheduled-cron" required placeholder="请输入调用频率"
+									   name="cron">
+							</div>
+						</div>
+						<div class="am-form-group">
+							<label for="scheduledAdd" class="am-u-sm-3 am-form-label">
+								是否启动 </label>
+							<div class="am-u-sm-9">
+								<input type="radio" name="cronStatus" value="1" checked="checkeda" /> 是
+								<input type="radio" name="cronStatus" value="0" /> 否
+							</div>
+						</div>
+						<div class="am-form-group">
+							<label for="scheduledAdd" class="am-u-sm-3 am-form-label">
+								备注 </label>
+							<div class="am-u-sm-9">
+								<input type="text" id="scheduled-remark"  placeholder="备注可为空"
+									   name="remark">
+							</div>
+						</div>
+						<div class="am-form-group">
+							<div class="am-u-sm-9 am-u-sm-push-3">
+								<input onclick="scheduledSubmit()" type="submit" class="am-btn am-btn-success" value="确认提交" />
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript"
+		src="assets/js/libs/jquery-1.10.2.min.js">
+	</script>
+	<script type="text/javascript" src="myplugs/js/plugs.js">
+	</script>
+	</body>
+</html>
